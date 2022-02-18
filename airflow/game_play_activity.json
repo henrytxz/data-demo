@@ -1,0 +1,26 @@
+[
+  {
+    "name": "player_id",
+    "type": "INTEGER",
+    "mode": "REQUIRED",
+    "description": "Unique identifier of a user/player"
+  },
+  {
+    "name": "event_date",
+    "type": "DATE",
+    "mode": "REQUIRED",
+    "description": "UTC Timezone"
+  },
+  {
+    "name": "device_id",
+    "type": "INTEGER",
+    "mode": "NULLABLE",
+    "description": "Unique identifier of user's device"
+  },
+  {
+    "name": "games_played",
+    "type": "INTEGER",
+    "mode": "NULLABLE",
+    "description": "Total number of games played on event_date by player, across all devices"
+  }
+]
