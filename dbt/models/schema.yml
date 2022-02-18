@@ -1,0 +1,22 @@
+version: 2
+
+models:
+  - name: game_play_activity
+    description:
+
+    columns:
+      - name: player_id
+        description:
+        tests:
+          - not_null
+
+      - name: device_id
+          description:
+
+      - name: event_date
+        description:
+        tests:
+          - not_null
+
+      - name: games_played
+          description:
