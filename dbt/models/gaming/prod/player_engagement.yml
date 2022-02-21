@@ -1,0 +1,14 @@
+version: 2
+
+models:
+  - name: player_engagement
+    description: This table records ...
+    columns:
+      - name: player_id
+        tests:
+          - not_null
+      - name: event_date
+        tests:
+          - not_null
+      - name: device_id
+      - name: games_played
