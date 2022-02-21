@@ -14,7 +14,7 @@ default_args = {
 	'retry_delay': timedelta(minutes=5),
 }
 
-BUCKET = 'us-east1-demo-e11d66ca-bucket'
+BUCKET = 'us-east1-demo-f5cd9848-bucket'
 
 with DAG(
 		dag_id='create_replace_game_play_activity_table',
