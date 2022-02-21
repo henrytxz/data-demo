@@ -3,10 +3,9 @@ dev: # this needs to match the profile: in dbt_project.yml
   outputs:
     dev:
       type: bigquery
-      method: service-account # TODO: try OAUTH
-      keyfile: "{{ env_var('PATH_GCP_KEYFILE') }}" # The PATH_GCP_KEYFILE env variable needs to be set
-      project: henrytxz       # Replace this with your project id
-      dataset: data_demo_dev  # The BigQuery concept "dataset" == dbt "schema"
+      method: oauth           # Run "gcloud auth application-default login" in Terminal
+      project: henrytxz       # GCP project id
+      dataset: "{{ env_var('YOUR_DBT_DEV_DATASET') }}"
       threads: 4
       location: US
 
