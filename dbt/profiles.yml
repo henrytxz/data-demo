@@ -4,7 +4,7 @@ dev: # this needs to match the profile: in your dbt_project.yml file
     dev:
       type: bigquery
       method: service-account
-      keyfile: /Users/henry/.dbt/dbt-user.json # Replace this with the full path to your keyfile
+      keyfile: "{{ env_var('PATH_GCP_KEYFILE') }}" # The PATH_GCP_KEYFILE env variable needs to be set
       project: henrytxz  # Replace this with your project id
       dataset: data_demo # Replace this with dbt_your_name, e.g. dbt_bob
       threads: 1
