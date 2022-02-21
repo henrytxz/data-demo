@@ -12,3 +12,7 @@ models:
           - not_null
       - name: device_id
       - name: games_played
+        tests:
+          - dbt_utils.accepted_range:
+              min_value: 0
+              inclusive: true
