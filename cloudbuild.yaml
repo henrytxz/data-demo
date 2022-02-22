@@ -2,15 +2,18 @@ substitutions:
     _GCS_BUCKET: us-east1-demo-f5cd9848-bucket
 
 steps:
-# Build + tag with commit sha
+  # Build + tag with commit sha
 - name: gcr.io/cloud-builders/docker
   args: [ 'build', '-t', 'us-docker.pkg.dev/henrytxz/data-demo/data-demo-dbt:$SHORT_SHA',
           '-t', 'us-docker.pkg.dev/henrytxz/data-demo/data-demo-dbt:latest', '.' ]
 
 # Let dbt build models and run tests (the "dbt build" command does it all)
-- name: gcr.io/cloud-builders/docker
-  args: [ 'run', 'us-docker.pkg.dev/henrytxz/data-demo/data-demo-dbt:$SHORT_SHA',
-          'dbt', 'build', '--profile', 'audit' ]
+- name: us-docker.pkg.dev/henrytxz/data-demo/data-demo-dbt:latest
+  entrypoint: bash
+  args:
+    - -c
+    - echo "$$SERVICE_ACCOUNT_KEY" > /dbt/dbt-user.json && export PATH_GCP_KEYFILE=/dbt/dbt-user.json && echo $PATH_GCP_KEYFILE && dbt build --profile audit
+  secretEnv: [ 'SERVICE_ACCOUNT_KEY' ]
 
 # if "dbt build" succeeds in the previous step, we upload dags to the Composer bucket
 - name: gcr.io/cloud-builders/gsutil
@@ -28,3 +31,8 @@ images:
 
 options:
   logging: CLOUD_LOGGING_ONLY
+
+availableSecrets:
+  secretManager:
+  - versionName: projects/594714635691/secrets/dbt-user-service-account/versions/latest
+    env: SERVICE_ACCOUNT_KEY
