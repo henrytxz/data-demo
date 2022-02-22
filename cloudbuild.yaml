@@ -1,0 +1,27 @@
+substitutions:
+    _GCS_BUCKET: us-east1-demo-f5cd9848-bucket
+
+steps:
+# Build + tag with commit sha
+- name: gcr.io/cloud-builders/docker
+  args: [ 'build', '-t', 'us-docker.pkg.dev/henrytxz/data-demo/data-demo-dbt:$SHORT_SHA',
+          '-t', 'us-docker.pkg.dev/henrytxz/data-demo/data-demo-dbt:latest', '.' ]
+
+# Let dbt build models and run tests (the "dbt build" command does it all)
+- name: gcr.io/cloud-builders/docker
+  args: [ 'run', 'us-docker.pkg.dev/henrytxz/data-demo/data-demo-dbt:$SHORT_SHA',
+          'dbt', 'build', '--profile', 'audit' ]
+
+# if "dbt build" succeeds in the previous step, we upload dags to the Composer bucket
+- name: gcr.io/cloud-builders/gsutil
+  args:
+    - '-m'
+    - 'rsync'
+    - '-d'
+    - '-r'
+    - 'airflow'
+    - 'gs://${_GCS_BUCKET}/dags'
+
+images:
+- 'us-docker.pkg.dev/henrytxz/data-demo/data-demo-dbt:$SHORT_SHA'
+- 'us-docker.pkg.dev/henrytxz/data-demo/data-demo-dbt:latest'

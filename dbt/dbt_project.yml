@@ -1,9 +1,14 @@
-name: 'data_demo'
+name: data_demo
 
 config-version: 2
+
+# https://docs.getdbt.com/reference/project-configs/version
+# The version of a dbt project. A required parameter that is not currently meaningfully used by dbt.
 version: '0.1'
 
-profile: 'dev'
+# https://docs.getdbt.com/reference/project-configs/profile
+# so that "dbt run/test/build" means "dbt run/test/build --profile dev"
+profile: dev
 
 model-paths: ["models"]
 seed-paths: ["seeds"]
@@ -22,9 +27,4 @@ require-dbt-version: [">=1.0.0", "<2.0.0"]
 models:
   data_demo:
     gaming:
-        staging:
-          +dataset: gaming_staging
-          +materialized: table
-        prod:
-          +dataset: gaming
-          +materialized: table
+      +materialized: table

@@ -1,13 +1,34 @@
-dev: # this needs to match the profile: in your dbt_project.yml file
+dev: # this needs to match the profile: in dbt_project.yml
   target: dev
   outputs:
     dev:
       type: bigquery
-      method: service-account
-      keyfile: "{{ env_var('PATH_GCP_KEYFILE') }}" # The PATH_GCP_KEYFILE env variable needs to be set
-      project: henrytxz  # Replace this with your project id
-      dataset: data_demo # Replace this with dbt_your_name, e.g. dbt_bob
-      threads: 1
-      timeout_seconds: 300
+      method: oauth           # Run "gcloud auth application-default login" in Terminal
+      project: henrytxz       # This is the GCP project id
+      dataset: "{{ env_var('YOUR_DBT_DEV_DATASET') }}"
+      threads: 4
       location: US
-      priority: interactive
+
+audit:
+  target: audit
+  outputs:
+    audit:
+      type: bigquery
+      method: service-account
+      keyfile: "{{ env_var('PATH_GCP_KEYFILE') }}"
+      project: henrytxz
+      dataset: data_demo_audit # different from the dev target
+      threads: 4
+      location: US
+
+prod:
+  target: prod
+  outputs:
+    prod:
+      type: bigquery
+      method: service-account
+      keyfile: "{{ env_var('PATH_GCP_KEYFILE') }}"
+      project: henrytxz
+      dataset: data_demo_prod # different from the dev target
+      threads: 4
+      location: US
