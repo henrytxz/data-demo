@@ -26,7 +26,7 @@ with DAG(
 
 	drop = BigQueryDeleteTableOperator(
 		task_id=f'drop_table_if_already_exists',
-		deletion_dataset_table='henrytxz.data_demo.game_play_activity',
+		deletion_dataset_table='henrytxz.demo_airflow.game_play_activity',
 		gcp_conn_id='google_cloud_default',
 		ignore_if_missing=True
 	)
@@ -34,9 +34,9 @@ with DAG(
 	create = BigQueryCreateEmptyTableOperator(
 		task_id=f'create_table',
 		project_id='henrytxz',
-		dataset_id='data_demo',
+		dataset_id='demo_airflow',
 		table_id='game_play_activity',
-		gcs_schema_object=f'gs://{BUCKET}/dags/airflow/game_play_activity.json',
+		gcs_schema_object=f'gs://{BUCKET}/dags/airflow/example_dags/game_play_activity.json',
 		bigquery_conn_id='google_cloud_default',
 		google_cloud_storage_conn_id='google_cloud_default',
 		exists_ok=True

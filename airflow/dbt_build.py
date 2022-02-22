@@ -6,7 +6,7 @@ from airflow.providers.google.cloud.operators.kubernetes_engine import GKEStartP
 from airflow.utils.dates import days_ago
 
 default_args = {
-    'owner': 'airflow',
+    'owner': 'data_engineering',
     'depends_on_past': False,
     'start_date': days_ago(1),
     'email_on_failure': False,

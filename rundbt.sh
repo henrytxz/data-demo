@@ -16,14 +16,15 @@ elif [ $# -eq 1 ] && [ "$1" == "update" ]; then
 elif [ "$1" == "dbt" ] && [ $# -gt 1 ]; then
   # User wants to do something with dbt and provided argument or sub-command, so let's run it.
   docker run --rm \
-  -t \
-  -e DBT_DEV_PROJECT="$DBT_DEV_PROJECT" \
-  -e PATH_GCP_KEYFILE=/root/.dbt/dbt-user.json \
-  -p 8080:8080 \
-  -v "$HOME"/.dbt/:/root/.dbt \
-  -v "$DATA_DEMO_HOME"/dbt:/dbt \
+  --tty \
+  --volume "$HOME"/.config/gcloud/:/"$HOME"/.config/gcloud \
+  --volume "$DATA_DEMO_HOME"/dbt:/dbt \
+  --env DBT_DEV_PROJECT="$DBT_DEV_PROJECT" \
+  --env YOUR_DBT_DEV_DATASET="$YOUR_DBT_DEV_DATASET" \
+  --env GOOGLE_APPLICATION_CREDENTIALS=/"$HOME"/.config/gcloud/application_default_credentials.json \
+  --publish 8080:8080 \
   $target_image \
-  "$@"
+  "$@" && sleep 60
 elif [ "$1" == "dbt" ] && [ $# -eq 1 ]; then
   # User wants to do something with dbt but didn't provide an argument nor sub-command.
   # Let's show the dbt man page.

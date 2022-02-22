@@ -2,16 +2,9 @@ version: 2
 
 models:
   - name: player_engagement
-    description: This table records ...
+    description: This table shows an arbitrary user engagement metric, the percentage of users who logs in the day after their first login.
     columns:
-      - name: player_id
-        tests:
-          - not_null
-      - name: event_date
-        tests:
-          - not_null
-      - name: device_id
-      - name: games_played
+      - name: fraction
         tests:
           - dbt_utils.accepted_range:
               min_value: 0
