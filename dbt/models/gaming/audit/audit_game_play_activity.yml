@@ -1,0 +1,18 @@
+version: 2
+
+models:
+  - name: audit_game_play_activity
+    description: This table is the same as table "game_play_activity", but allows me to demo "dbt test". The primary key for this table is the (player_id, event_date) pair.
+    columns:
+      - name: player_id
+        tests:
+          - not_null
+      - name: event_date
+        tests:
+          - not_null
+      - name: device_id
+      - name: games_played
+        tests:
+          - dbt_utils.accepted_range:
+              min_value: 0
+              inclusive: true
