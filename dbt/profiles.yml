@@ -4,7 +4,7 @@ dev: # this needs to match the profile: in dbt_project.yml
     dev:
       type: bigquery
       method: oauth           # Run "gcloud auth application-default login" in Terminal
-      project: henrytxz       # GCP project id
+      project: henrytxz       # This is the GCP project id
       dataset: "{{ env_var('YOUR_DBT_DEV_DATASET') }}"
       threads: 4
       location: US
