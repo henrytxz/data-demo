@@ -44,6 +44,18 @@ steps:
     - 'airflow'
     - 'gs://${_GCS_BUCKET}/dags/airflow'
 
+- name: us-docker.pkg.dev/henrytxz/data-demo/data-demo-dbt:latest
+  entrypoint: bash
+  args:
+    - -c
+    - dbt docs generate --profile prod && cp target/*.{json,html} /workspace
+
+- name: gcr.io/google.com/cloudsdktool/cloud-sdk
+  entrypoint: bash
+  args:
+    - -c
+    - mkdir -p serve_doc/public && cp /workspace/*.{json,html} serve_doc/public && cd serve_doc && gcloud app deploy
+
 # The images field tells Cloud Build to push these images to Artifact Registry.
 images:
 - 'us-docker.pkg.dev/henrytxz/data-demo/data-demo-dbt:$SHORT_SHA'
