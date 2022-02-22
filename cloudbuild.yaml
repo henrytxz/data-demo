@@ -25,3 +25,6 @@ steps:
 images:
 - 'us-docker.pkg.dev/henrytxz/data-demo/data-demo-dbt:$SHORT_SHA'
 - 'us-docker.pkg.dev/henrytxz/data-demo/data-demo-dbt:latest'
+
+options:
+  logging: CLOUD_LOGGING_ONLY
