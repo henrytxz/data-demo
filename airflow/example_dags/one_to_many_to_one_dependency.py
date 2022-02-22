@@ -31,7 +31,6 @@ with DAG(
     default_args=args,
     schedule_interval="@once",
     start_date=days_ago(1),
-    tags=['example'],
 ) as dag:
 
     # maybe not everyone uses Python: here a for loop that creates 4 very similar tasks and append them to a list
