@@ -1,21 +1,40 @@
+# The substitutions field specifies variables at build time.
 substitutions:
     _GCS_BUCKET: us-east1-demo-f5cd9848-bucket
 
 steps:
-  # Build + tag with commit sha
+# Build + tag with commit SHA.
 - name: gcr.io/cloud-builders/docker
   args: [ 'build', '-t', 'us-docker.pkg.dev/henrytxz/data-demo/data-demo-dbt:$SHORT_SHA',
           '-t', 'us-docker.pkg.dev/henrytxz/data-demo/data-demo-dbt:latest', '.' ]
 
-# Let dbt build models and run tests (the "dbt build" command does it all)
+# Pull the Service Account JSON from Secret Manager onto build server,
+# store it in /workspace folder (which persists between build steps)
 - name: us-docker.pkg.dev/henrytxz/data-demo/data-demo-dbt:latest
   entrypoint: bash
   args:
     - -c
-    - echo "$$SERVICE_ACCOUNT_KEY" > /dbt/dbt-user.json && export PATH_GCP_KEYFILE=/dbt/dbt-user.json && echo $PATH_GCP_KEYFILE && dbt build --profile audit
+    - mkdir /workspace/secrets && echo "$$SERVICE_ACCOUNT_KEY" > /workspace/secrets/dbt-user.json
   secretEnv: [ 'SERVICE_ACCOUNT_KEY' ]
 
-# if "dbt build" succeeds in the previous step, we upload dags to the Composer bucket
+# Let dbt build models and run tests (the "dbt build" command does it all)
+# run "dbt build --profile audit" inside my dbt container, mounting the Service Account JSON into it
+# and setting an environment variable PATH_GCP_KEYFILE so dbt knows where it is.
+- name: gcr.io/cloud-builders/docker
+  args:
+    - run
+    - --volume
+    - /workspace/secrets:/dbt/secrets
+    - --env
+    - PATH_GCP_KEYFILE=/dbt/secrets/dbt-user.json
+    - us-docker.pkg.dev/henrytxz/data-demo/data-demo-dbt:latest
+    - dbt
+    - build
+    - --profile
+    - audit
+
+# If we get to this step, it means "dbt build --profile audit" above succeeded.
+# So we deploy to Prod by uploading dags to the Composer storage bucket.
 - name: gcr.io/cloud-builders/gsutil
   args:
     - '-m'
@@ -23,8 +42,9 @@ steps:
     - '-d'
     - '-r'
     - 'airflow'
-    - 'gs://${_GCS_BUCKET}/dags'
+    - 'gs://${_GCS_BUCKET}/dags/airflow'
 
+# The images field tells Cloud Build to push these images to Artifact Registry.
 images:
 - 'us-docker.pkg.dev/henrytxz/data-demo/data-demo-dbt:$SHORT_SHA'
 - 'us-docker.pkg.dev/henrytxz/data-demo/data-demo-dbt:latest'
