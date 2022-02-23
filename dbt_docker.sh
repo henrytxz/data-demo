@@ -3,14 +3,14 @@
 available_arguments="
 \tupdate: Pull Docker image from the Artifact Registry
 \tdbt <run, test, --select, etc>: Runs dbt with the provided dbt sub-command\n
-To learn more about dbt, do \"./rundbt.sh dbt\" in your Terminal."
+To learn more about dbt, do \"./dbt_docker.sh dbt\" in your Terminal."
 
 help="Argument '$1' is invalid.\n\n$available_arguments"
 
 target_image=us-docker.pkg.dev/henrytxz/data-demo/data-demo-dbt:latest
 
 if [ $# -eq 0 ]; then
-  printf "The ./rundbt.sh script requires a minimum of 1 argument.\n\nAvailale arguments: $available_arguments\n"
+  printf "The ./dbt_docker.sh script requires a minimum of 1 argument.\n\nAvailale arguments: $available_arguments\n"
 elif [ $# -eq 1 ] && [ "$1" == "update" ]; then
   docker pull $target_image
 elif [ "$1" == "dbt" ] && [ $# -gt 1 ]; then
