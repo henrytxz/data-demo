@@ -13,7 +13,6 @@ default_args = {
     'email_on_retry': False,
     'retries': 0,
     'retry_delay': timedelta(minutes=5),
-    'catchup': False
 }
 
 GCP_PROJECT_ID = "henrytxz"
@@ -33,10 +32,10 @@ secret_volume = Secret(
     key='dbt-user.json')            # Key in the form of service account file name
 
 with DAG(
-    dag_id='SQL_workload',
+    dag_id='sql_workload',
     default_args=default_args,
     schedule_interval='@hourly',
-    catchup=False
+    tags=['data-demo'],
 ) as dag:
 
     dbt_build = GKEStartPodOperator(

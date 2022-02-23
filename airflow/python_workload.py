@@ -15,24 +15,24 @@ def do_work(x):
     return x * 2
 
 with DAG(
-    dag_id='downstream_to_run_a_task_on_schedule',
+    dag_id='python_workload',
     default_args=args,
     schedule_interval='@hourly',
     start_date=days_ago(1),
-    tags=['example'],
+    tags=['data-demo'],
 ) as dag:
 
     sensor = ExternalTaskSensor(
         task_id='external_task_sensor',
-        external_dag_id='run_a_task_on_schedule',
+        external_dag_id='sql_workload',
         poke_interval=30,
         check_existence=True
     )
 
-    t1 = PythonOperator(
-        task_id='another_simple_task',
+    python_task = PythonOperator(
+        task_id='python_task',
         python_callable=do_work,
         op_kwargs={'x': 1},
     )
 
-    sensor >> t1
+    sensor >> python_task

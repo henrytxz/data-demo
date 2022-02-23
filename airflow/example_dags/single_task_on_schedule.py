@@ -28,7 +28,6 @@ with DAG(
     schedule_interval="@hourly",
     start_date=days_ago(1),
     max_active_runs=1,
-    tags=['example'],
 ) as dag:
 
     t1 = PythonOperator(
